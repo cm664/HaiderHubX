@@ -10,10 +10,6 @@ local MarketplaceService = game:GetService("MarketplaceService")
 
 local player = Players.LocalPlayer
 
---==================================================
--- GAME PASS IMAGE
---==================================================
-
 local PASS_ID = 1703205341
 local PASS_IMAGE = ""
 
@@ -21,10 +17,6 @@ pcall(function()
 	local info = MarketplaceService:GetProductInfo(PASS_ID, Enum.InfoType.GamePass)
 	PASS_IMAGE = "rbxassetid://" .. info.IconImageAssetId
 end)
-
---==================================================
--- POSICIONES
---==================================================
 
 local basePositions = {
 	Vector3.new(152.51, 5.38, -137),
@@ -43,18 +35,10 @@ local basePositions = {
 
 local LAST_INDEX = #basePositions
 
---==================================================
--- VARIABLES
---==================================================
-
 local modifiedParts = {}
 local collisionActive = false
 local minimized = false
 local moneyGui
-
---==================================================
--- UI
---==================================================
 
 local ScreenGui = Instance.new("ScreenGui", player.PlayerGui)
 ScreenGui.ResetOnSpawn = false
@@ -72,10 +56,6 @@ local Stroke = Instance.new("UIStroke", Frame)
 Stroke.Color = Color3.fromRGB(0,140,255)
 Stroke.Thickness = 2
 
---==================================================
--- TITULO
---==================================================
-
 local Title = Instance.new("TextLabel", Frame)
 Title.Size = UDim2.new(1,-40,0,40)
 Title.BackgroundTransparency = 1
@@ -84,10 +64,6 @@ Title.Font = Enum.Font.GothamBold
 Title.TextSize = 20
 Title.TextColor3 = Color3.fromRGB(0,140,255)
 Title.ZIndex = 5
-
---==================================================
--- MINIMIZAR
---==================================================
 
 local MinBtn = Instance.new("TextButton", Frame)
 MinBtn.Size = UDim2.new(0,30,0,22)
@@ -99,10 +75,6 @@ MinBtn.TextColor3 = Color3.new(1,1,1)
 MinBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
 MinBtn.ZIndex = 6
 Instance.new("UICorner", MinBtn).CornerRadius = UDim.new(0,6)
-
---==================================================
--- BOTONES
---==================================================
 
 local function createButton(text, y)
 	local b = Instance.new("TextButton", Frame)
@@ -128,10 +100,6 @@ local ParkButton  = createButton("Easy Parkour", 0.60)
 local MoneyButton = createButton("TP Money", 0.74)
 
 local buttons = {TpButton, IrButton, VipButton, ParkButton, MoneyButton}
-
---==================================================
--- FUNCIONES TP
---==================================================
 
 local SAFE_Y = 10
 
@@ -179,7 +147,11 @@ local function nearestPos(hrp)
 end
 
 local function tweenTo(hrp, pos)
-	local t = (hrp.Position - pos).Magnitude / 300
+	local dist = (hrp.Position - pos).Magnitude
+	local speed = 2300
+	local t = dist / speed
+	if t < 0.03 then t = 0.03 end
+
 	local tw = TweenService:Create(
 		hrp,
 		TweenInfo.new(t, Enum.EasingStyle.Linear),
@@ -189,10 +161,6 @@ local function tweenTo(hrp, pos)
 	tw.Completed:Wait()
 end
 
---==================================================
--- TP / IR
---==================================================
-
 TpButton.MouseButton1Click:Connect(function()
 	local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 	if not hrp then return end
@@ -200,7 +168,7 @@ TpButton.MouseButton1Click:Connect(function()
 	normalizeY(hrp)
 	disableCollision(hrp)
 	tweenTo(hrp, nearestPos(hrp))
-	task.wait(0.1)
+	task.wait(0.05)
 	tweenTo(hrp, basePositions[1])
 	restoreCollision()
 end)
@@ -212,14 +180,10 @@ IrButton.MouseButton1Click:Connect(function()
 	normalizeY(hrp)
 	disableCollision(hrp)
 	tweenTo(hrp, nearestPos(hrp))
-	task.wait(0.1)
+	task.wait(0.05)
 	tweenTo(hrp, basePositions[LAST_INDEX])
 	restoreCollision()
 end)
-
---==================================================
--- VIP / PARKOUR
---==================================================
 
 VipButton.MouseButton1Click:Connect(function()
 	for _, obj in ipairs(workspace:GetDescendants()) do
@@ -242,10 +206,6 @@ ParkButton.MouseButton1Click:Connect(function()
 		end
 	end
 end)
-
---==================================================
--- TP MONEY (FUNCIONA)
---==================================================
 
 MoneyButton.MouseButton1Click:Connect(function()
 	if moneyGui then
@@ -295,10 +255,6 @@ MoneyButton.MouseButton1Click:Connect(function()
 	mBtn("TP Money 2",75,"MoneyObby2End")
 	mBtn("TP Money 3",120,"MoneyObby3End")
 end)
-
---==================================================
--- MINIMIZAR (IMAGEN QUEDA)
---==================================================
 
 MinBtn.MouseButton1Click:Connect(function()
 	minimized = not minimized
