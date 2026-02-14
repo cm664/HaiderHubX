@@ -102,7 +102,6 @@ local MoneyButton = createButton("TP Money", 0.74)
 local buttons = {TpButton, IrButton, VipButton, ParkButton, MoneyButton}
 
 local SAFE_Y = 10
-local speed = 2400
 
 local function normalizeY(hrp)
 	if hrp.Position.Y < SAFE_Y then
@@ -149,6 +148,7 @@ end
 
 local function tweenTo(hrp, pos)
 	local dist = (hrp.Position - pos).Magnitude
+	local speed = 1500
 	local t = dist / speed
 	if t < 0.03 then t = 0.03 end
 
