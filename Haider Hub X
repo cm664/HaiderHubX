@@ -4,21 +4,21 @@
 --  ZOOM + SKIP PROMPT  
 --  Haider Hub X  
 --==================================================  
-  
+
 local Players = game:GetService("Players")  
 local TweenService = game:GetService("TweenService")  
 local MarketplaceService = game:GetService("MarketplaceService")  
-  
+
 local player = Players.LocalPlayer  
-  
+
 local PASS_ID = 1703205341  
 local PASS_IMAGE = ""  
-  
+
 pcall(function()  
 local info = MarketplaceService:GetProductInfo(PASS_ID, Enum.InfoType.GamePass)  
 PASS_IMAGE = "rbxassetid://" .. info.IconImageAssetId  
 end)  
-  
+
 local basePositions = {  
 Vector3.new(152.51, 5.38, -137),  
 Vector3.new(247.72, 5.38, -137),  
@@ -33,29 +33,29 @@ Vector3.new(3133.93, 5.38, -137),
 Vector3.new(3485.94, 5.38, -137),  
 Vector3.new(3841.31, 5.38, -137),  
 }  
-  
+
 local LAST_INDEX = #basePositions  
 local modifiedParts = {}  
 local collisionActive = false  
 local minimized = false  
 local moneyGui  
-  
+
 local ScreenGui = Instance.new("ScreenGui", player.PlayerGui)  
 ScreenGui.ResetOnSpawn = false  
-  
+
 local Frame = Instance.new("Frame", ScreenGui)  
-Frame.Size = UDim2.new(0,230,0,320)  
-Frame.Position = UDim2.new(0.5,-115,0.5,-160)  
+Frame.Size = UDim2.new(0,230,0,360)  
+Frame.Position = UDim2.new(0.5,-115,0.5,-180)  
 Frame.BackgroundColor3 = Color3.fromRGB(0,0,0)  
 Frame.Active = true  
 Frame.Draggable = true  
 Frame.BorderSizePixel = 0  
 Instance.new("UICorner", Frame).CornerRadius = UDim.new(0,16)  
-  
+
 local Stroke = Instance.new("UIStroke", Frame)  
 Stroke.Color = Color3.fromRGB(0,140,255)  
 Stroke.Thickness = 2  
-  
+
 local Title = Instance.new("TextLabel", Frame)  
 Title.Size = UDim2.new(1,-40,0,40)  
 Title.BackgroundTransparency = 1  
@@ -63,7 +63,7 @@ Title.Text = "Haider Hub X"
 Title.Font = Enum.Font.GothamBold  
 Title.TextSize = 20  
 Title.TextColor3 = Color3.fromRGB(0,140,255)  
-  
+
 local MinBtn = Instance.new("TextButton", Frame)  
 MinBtn.Size = UDim2.new(0,30,0,22)  
 MinBtn.Position = UDim2.new(1,-34,0,6)  
@@ -73,18 +73,18 @@ MinBtn.TextSize = 18
 MinBtn.TextColor3 = Color3.new(1,1,1)  
 MinBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)  
 Instance.new("UICorner", MinBtn).CornerRadius = UDim.new(0,6)  
-  
+
 local Scroll = Instance.new("ScrollingFrame", Frame)  
 Scroll.Size = UDim2.new(1,-10,1,-50)  
 Scroll.Position = UDim2.new(0,5,0,45)  
 Scroll.BackgroundTransparency = 1  
 Scroll.ScrollBarThickness = 4  
-Scroll.CanvasSize = UDim2.new(0,0,0,500)  
-  
+Scroll.CanvasSize = UDim2.new(0,0,0,700)  
+
 local layout = Instance.new("UIListLayout", Scroll)  
 layout.Padding = UDim.new(0,8)  
 layout.SortOrder = Enum.SortOrder.LayoutOrder  
-  
+
 local function createButton(text)  
 local b = Instance.new("TextButton")  
 b.Size = UDim2.new(1,-10,0,38)  
@@ -100,7 +100,7 @@ s.Color = Color3.fromRGB(0,140,255)
 s.Thickness = 2  
 return b  
 end  
-  
+
 local TpButton    = createButton("تنقل للبداية")  
 local IrButton    = createButton("تنقل لآخر الماب")  
 local VipButton   = createButton("فتح ال VIP")  
@@ -108,31 +108,30 @@ local ParkButton  = createButton("تسهيل الباركور")
 local MoneyButton = createButton("جمع فلوس سريع")  
 local ZoomButton  = createButton("كسر الزوم")  
 local SkipButton  = createButton("تخطي المسك")  
-  
-local buttons = {TpButton, IrButton, VipButton, ParkButton, MoneyButton, ZoomButton, SkipButton}  
-  
+local BrainBtn    = createButton("كشف البرينروت")  
+
 local SAFE_Y = 10  
-  
+
 local function normalizeY(hrp)  
 if hrp.Position.Y < SAFE_Y then  
 hrp.CFrame = CFrame.new(hrp.Position.X, SAFE_Y, hrp.Position.Z)  
 end  
 end  
-  
+
 local function disableCollision(hrp)  
 if collisionActive then return end  
 collisionActive = true  
 modifiedParts = {}  
-  
-for _, obj in ipairs(workspace:GetDescendants()) do      
-	if obj:IsA("BasePart") and obj.Position.Y > hrp.Position.Y - 5 then      
-		modifiedParts[obj] = obj.CanCollide      
-		obj.CanCollide = false      
-	end      
+
+for _, obj in ipairs(workspace:GetDescendants()) do  
+	if obj:IsA("BasePart") and obj.Position.Y > hrp.Position.Y - 5 then  
+		modifiedParts[obj] = obj.CanCollide  
+		obj.CanCollide = false  
+	end  
 end  
-  
+
 end  
-  
+
 local function restoreCollision()  
 if not collisionActive then return end  
 for p, v in pairs(modifiedParts) do  
@@ -143,7 +142,7 @@ end
 modifiedParts = {}  
 collisionActive = false  
 end  
-  
+
 local function nearestPos(hrp)  
 local bestIndex = 1  
 local bestDist = (hrp.Position - basePositions[1]).Magnitude  
@@ -156,19 +155,19 @@ end
 end  
 return basePositions[bestIndex]  
 end  
-  
+
 local function tweenTo(hrp, pos)  
 local dist = (hrp.Position - pos).Magnitude  
 local speed = 700  
 local t = dist / speed  
 if t < 0.03 then t = 0.03 end  
-  
-local tw = TweenService:Create(hrp,TweenInfo.new(t, Enum.EasingStyle.Linear),{CFrame = CFrame.new(pos)})      
-tw:Play()      
+
+local tw = TweenService:Create(hrp,TweenInfo.new(t, Enum.EasingStyle.Linear),{CFrame = CFrame.new(pos)})  
+tw:Play()  
 tw.Completed:Wait()  
-  
+
 end  
-  
+
 TpButton.MouseButton1Click:Connect(function()  
 local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")  
 if not hrp then return end  
@@ -179,7 +178,7 @@ task.wait(0.05)
 tweenTo(hrp, basePositions[1])  
 restoreCollision()  
 end)  
-  
+
 IrButton.MouseButton1Click:Connect(function()  
 local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")  
 if not hrp then return end  
@@ -190,7 +189,7 @@ task.wait(0.05)
 tweenTo(hrp, basePositions[LAST_INDEX])  
 restoreCollision()  
 end)  
-  
+
 VipButton.MouseButton1Click:Connect(function()  
 for _, obj in ipairs(workspace:GetDescendants()) do  
 if obj:IsA("BasePart") then  
@@ -201,7 +200,7 @@ end
 end  
 end  
 end)  
-  
+
 ParkButton.MouseButton1Click:Connect(function()  
 for _, obj in ipairs(workspace:GetDescendants()) do  
 if obj:IsA("BasePart") then  
@@ -212,77 +211,228 @@ end
 end  
 end  
 end)  
-  
+
 MoneyButton.MouseButton1Click:Connect(function()  
 if moneyGui then  
 moneyGui.Enabled = not moneyGui.Enabled  
 return  
 end  
-  
-moneyGui = Instance.new("ScreenGui", player.PlayerGui)      
-moneyGui.ResetOnSpawn = false      
-  
-local f = Instance.new("Frame", moneyGui)      
-f.Size = UDim2.new(0,220,0,180)      
-f.Position = UDim2.new(0.05,0,0.4,0)      
-f.BackgroundColor3 = Color3.fromRGB(30,30,30)      
-f.Active = true      
-f.Draggable = true      
-Instance.new("UICorner", f).CornerRadius = UDim.new(0,12)      
-  
-local st = Instance.new("UIStroke", f)      
-st.Color = Color3.fromRGB(0,140,255)      
-st.Thickness = 2      
-  
-local function tp(partName)      
-	local hrp = player.Character:WaitForChild("HumanoidRootPart")      
-	local part = workspace:FindFirstChild(partName, true)      
-	if part then      
-		hrp.CFrame = part.CFrame + Vector3.new(0,3,0)      
-	end      
-end      
-  
-local function mBtn(txt, y, part)      
-	local b = Instance.new("TextButton", f)      
-	b.Size = UDim2.new(0.9,0,0,35)      
-	b.Position = UDim2.new(0.05,0,0,y)      
-	b.Text = txt      
-	b.Font = Enum.Font.SourceSansBold      
-	b.TextSize = 14      
-	b.TextColor3 = Color3.new(1,1,1)      
-	b.BackgroundColor3 = Color3.fromRGB(60,60,60)      
-	Instance.new("UICorner", b).CornerRadius = UDim.new(0,10)      
-	b.MouseButton1Click:Connect(function() tp(part) end)      
-end      
-  
-mBtn("TP Money 1",30,"MoneyObby1End")      
-mBtn("TP Money 2",75,"MoneyObby2End")      
+
+moneyGui = Instance.new("ScreenGui", player.PlayerGui)  
+moneyGui.ResetOnSpawn = false  
+
+local f = Instance.new("Frame", moneyGui)  
+f.Size = UDim2.new(0,220,0,180)  
+f.Position = UDim2.new(0.05,0,0.4,0)  
+f.BackgroundColor3 = Color3.fromRGB(30,30,30)  
+f.Active = true  
+f.Draggable = true  
+Instance.new("UICorner", f).CornerRadius = UDim.new(0,12)  
+
+local st = Instance.new("UIStroke", f)  
+st.Color = Color3.fromRGB(0,140,255)  
+st.Thickness = 2  
+
+local function tp(partName)  
+	local hrp = player.Character:WaitForChild("HumanoidRootPart")  
+	local part = workspace:FindFirstChild(partName, true)  
+	if part then  
+		hrp.CFrame = part.CFrame + Vector3.new(0,3,0)  
+	end  
+end  
+
+local function mBtn(txt, y, part)  
+	local b = Instance.new("TextButton", f)  
+	b.Size = UDim2.new(0.9,0,0,35)  
+	b.Position = UDim2.new(0.05,0,0,y)  
+	b.Text = txt  
+	b.Font = Enum.Font.SourceSansBold  
+	b.TextSize = 14  
+	b.TextColor3 = Color3.new(1,1,1)  
+	b.BackgroundColor3 = Color3.fromRGB(60,60,60)  
+	Instance.new("UICorner", b).CornerRadius = UDim.new(0,10)  
+	b.MouseButton1Click:Connect(function() tp(part) end)  
+end  
+
+mBtn("TP Money 1",30,"MoneyObby1End")  
+mBtn("TP Money 2",75,"MoneyObby2End")  
 mBtn("TP Money 3",120,"MoneyObby3End")  
-  
+
 end)  
-  
+
 ZoomButton.MouseButton1Click:Connect(function()  
 player.CameraMaxZoomDistance = math.huge  
 player.CameraMinZoomDistance = 0.5  
 end)  
-  
+
 local function f(p)  
 if p:IsA("ProximityPrompt") then  
 p.HoldDuration = 0  
 end  
 end  
-  
+
 SkipButton.MouseButton1Click:Connect(function()  
 for _,v in ipairs(workspace:GetDescendants()) do  
 f(v)  
 end  
 workspace.DescendantAdded:Connect(f)  
 end)  
-  
+
 MinBtn.MouseButton1Click:Connect(function()  
 minimized = not minimized  
 Scroll.Visible = not minimized  
 Title.Visible = not minimized  
 MinBtn.Text = minimized and "+" or "—"  
-Frame.Size = minimized and UDim2.new(0,90,0,90) or UDim2.new(0,230,0,320)  
+Frame.Size = minimized and UDim2.new(0,90,0,90) or UDim2.new(0,230,0,360)  
 end)  
+
+--================ BRAINROT DETECTOR =================--
+
+BrainBtn.MouseButton1Click:Connect(function()
+
+local Debris = workspace:WaitForChild("Debris")
+
+local detectDivine = true
+local detectCelestial = true
+local detectSecret = true
+
+local gui = Instance.new("ScreenGui",player.PlayerGui)
+gui.ResetOnSpawn=false
+
+local frame = Instance.new("Frame",gui)
+frame.Size = UDim2.new(0,240,0,180)
+frame.Position = UDim2.new(0.5,-120,0.5,-90)
+frame.BackgroundColor3 = Color3.fromRGB(0,0,0)
+frame.BackgroundTransparency = 0.25
+frame.Active = true
+frame.Draggable = true
+Instance.new("UICorner",frame).CornerRadius = UDim.new(0,14)
+
+local stroke = Instance.new("UIStroke",frame)
+stroke.Color = Color3.fromRGB(255,0,0)
+stroke.Thickness = 2
+
+local title = Instance.new("TextLabel",frame)
+title.Size = UDim2.new(1,0,0,30)
+title.BackgroundTransparency = 1
+title.Text = "Brainrot Detector"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 16
+title.TextColor3 = Color3.fromRGB(255,0,0)
+
+local list = Instance.new("UIListLayout",frame)
+list.Padding = UDim.new(0,10)
+list.HorizontalAlignment = Enum.HorizontalAlignment.Center
+list.VerticalAlignment = Enum.VerticalAlignment.Top
+list.SortOrder = Enum.SortOrder.LayoutOrder
+list.Parent = frame
+title.LayoutOrder = 0
+
+local function toggleBtn(text,order)
+	local b = Instance.new("TextButton",frame)
+	b.Size = UDim2.new(0.85,0,0,40)
+	b.BackgroundColor3 = Color3.fromRGB(20,20,20)
+	b.Text = text.." : ON"
+	b.TextColor3 = Color3.new(1,1,1)
+	b.Font = Enum.Font.GothamBold
+	b.TextSize = 14
+	b.LayoutOrder = order
+	Instance.new("UICorner",b).CornerRadius = UDim.new(0,10)
+
+	local st = Instance.new("UIStroke",b)
+	st.Color = Color3.fromRGB(255,0,0)
+	st.Thickness = 2
+	return b
+end
+
+local divineBtn = toggleBtn("Divine",1)
+local celBtn    = toggleBtn("Celestial",2)
+local secBtn    = toggleBtn("Secret",3)
+
+local function removeTypeESP(typeName)
+	for _,v in ipairs(Debris:GetChildren()) do
+		local esp = v:FindFirstChild("BrainESP")
+		if esp and esp:FindFirstChild(typeName) then
+			esp:FindFirstChild(typeName):Destroy()
+			if #esp:GetChildren()==0 then
+				esp:Destroy()
+			end
+		end
+	end
+end
+
+divineBtn.MouseButton1Click:Connect(function()
+	detectDivine = not detectDivine
+	divineBtn.Text = "Divine : "..(detectDivine and "ON" or "OFF")
+	if not detectDivine then removeTypeESP("DIVINE") end
+end)
+
+celBtn.MouseButton1Click:Connect(function()
+	detectCelestial = not detectCelestial
+	celBtn.Text = "Celestial : "..(detectCelestial and "ON" or "OFF")
+	if not detectCelestial then removeTypeESP("CELESTIAL") end
+end)
+
+secBtn.MouseButton1Click:Connect(function()
+	detectSecret = not detectSecret
+	secBtn.Text = "Secret : "..(detectSecret and "ON" or "OFF")
+	if not detectSecret then removeTypeESP("SECRET") end
+end)
+
+local function addESP(obj,text,color)
+	local esp = obj:FindFirstChild("BrainESP")
+	if not esp then
+		esp = Instance.new("BillboardGui",obj)
+		esp.Name="BrainESP"
+		esp.Size = UDim2.new(0,150,0,40)
+		esp.AlwaysOnTop=true
+		esp.StudsOffset=Vector3.new(0,3,0)
+	end
+	
+	if esp:FindFirstChild(text) then return end
+	
+	local t = Instance.new("TextLabel",esp)
+	t.Name = text
+	t.Size = UDim2.new(1,0,1,0)
+	t.BackgroundTransparency = 1
+	t.Text = text
+	t.TextColor3 = color
+	t.TextStrokeTransparency = 0
+	t.Font = Enum.Font.GothamBold
+	t.TextScaled = true
+end
+
+local function scan(obj)
+	local gui = obj:FindFirstChildWhichIsA("SurfaceGui",true)
+	if not gui then return end
+	local class = gui:FindFirstChild("Class",true)
+	if not class then return end
+
+	if detectDivine and class:FindFirstChild("Divine") then
+		addESP(obj,"DIVINE",Color3.fromRGB(255,0,0))
+	end
+
+	if detectCelestial and class:FindFirstChild("Celestial") then
+		addESP(obj,"CELESTIAL",Color3.fromRGB(170,0,255))
+	end
+
+	if detectSecret and class:FindFirstChild("Secret") then
+		addESP(obj,"SECRET",Color3.fromRGB(0,255,170))
+	end
+end
+
+task.spawn(function()
+	while true do
+		for _,v in ipairs(Debris:GetChildren()) do
+			scan(v)
+		end
+		task.wait(0.2)
+	end
+end)
+
+Debris.ChildAdded:Connect(function(v)
+	task.wait()
+	scan(v)
+end)
+
+end)
